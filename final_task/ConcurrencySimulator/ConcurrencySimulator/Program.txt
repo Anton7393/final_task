@@ -1,0 +1,25 @@
+3 1 1 1 1 1 1
+a = 4
+print a
+lock
+b = 9
+print b
+unlock
+print b
+a = 3
+print a
+lock
+b = 8
+end
+print b 
+unlock
+print b
+b = 5
+a = 17
+print b
+lock
+b = 21
+print b
+unlock
+print b
+end
