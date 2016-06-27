@@ -5,27 +5,29 @@
 class ProgramController
 {
 public:
-	ProgramController(Initializer _initializer, std::list<Statement> _statementSequnce, std::map<char, int> _variablesContainer);
+	ProgramController(const Initializer & _initializer, StatementStack _statementStack, std::map<char, int> & _variablesContainer);
 	void start();
 
 private:
-	void statementInterpretator(Statement _statement);
+	void statementInterpretator(const Statement & _statement);
+	int getReadyId();
+	Statement getCurrentStatement();
 	void implementEnd();
 	void implementLock();
 	void implementUnlock();
-	void implementPrint(std::map<char, int> _variablesContainer, char _variableName);
-	void implementAssignment(std::map<char, int> * _variablesContainer, char _variableName, int _variableValue);
+	void implementPrint(const std::map<char, int> & _variablesContainer, char _variableName);
+	void implementAssignment(std::map<char, int> & _variablesContainer, char _variableName, int _variableValue);
 	void switchProgramms();
 	void programmsRunning();
 	void readyProgrammsSetTime();
 	void startImplementation();
 	void overImplementation();
 
-	std::list<Program> mProgramSequnce;
-	std::list<Statement> mStatementSequnce;
-	std::map<char, int> mVariablesContainer;
 	Initializer mInitializer;
-
+	StatementStack mStatementStack;
+	std::map<char, int> mVariablesContainer;
+	std::list<Program> mProgramSequnce;
+	
 	ProgramController(const ProgramController &);
 	ProgramController & operator = (const ProgramController &);
 };

@@ -5,13 +5,14 @@ class Program
 {
 public:
 	Program();
-	void print(std::map<char, int> _variableContainer, char _name);
-	void assignment(std::map<char, int> * _variableContainer, char _name, int _value);
+	void print(const std::map<char, int> & _variableContainer, char _name);
+	void assignment(std::map<char, int> & _variableContainer, char _name, int _value);
 	void lock();
 	void unlock();
 	void end();
+	int getId();
 	Status getStatus();
-	void setStatus(Status _status);
+	void setStatus(const Status & _status);
 	int getTime();
 	void setTime(int _time);
 	void addTime(int _time);

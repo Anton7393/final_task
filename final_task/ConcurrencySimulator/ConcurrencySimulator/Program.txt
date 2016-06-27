@@ -6,16 +6,18 @@ b = 9
 print b
 unlock
 print b
+end
 a = 3
 print a
 lock
 b = 8
-end
 print b 
 unlock
 print b
+end
 b = 5
 a = 17
+print a
 print b
 lock
 b = 21

@@ -2,9 +2,9 @@
 #include "ProgramController.h"
 
 
-ProgramController::ProgramController(Initializer _initializer, std::list<Statement> _statementSequnce, std::map<char, int> _variablesContainer)
+ProgramController::ProgramController(const Initializer & _initializer, StatementStack _statementStack, std::map<char, int> & _variablesContainer)
 	: mInitializer(_initializer)
-	, mStatementSequnce(_statementSequnce)
+	, mStatementStack(_statementStack)
 	, mVariablesContainer(_variablesContainer)
 	, mProgramSequnce()
 {
@@ -18,15 +18,15 @@ void ProgramController::start()
 {
 	readyProgrammsSetTime();
 
-	for (auto statement : mStatementSequnce)
+	while (mProgramSequnce.size() != 0)
 	{
-		if (mProgramSequnce.size() == 0) break;
+		auto statement = getCurrentStatement();
 		programmsRunning();
 		statementInterpretator(statement);
 	}
 }
 
-void ProgramController::statementInterpretator(Statement _statement)
+void ProgramController::statementInterpretator(const Statement & _statement)
 {
 	switch (_statement.command)
 	{
@@ -40,12 +40,24 @@ void ProgramController::statementInterpretator(Statement _statement)
 		implementUnlock();
 		break;
 	case StatementCommand::assignment:
-		implementAssignment(&mVariablesContainer, _statement.variableName, _statement.variableValue);
+		implementAssignment(mVariablesContainer, _statement.variableName, _statement.variableValue);
 		break;
 	case StatementCommand::print:
 		implementPrint(mVariablesContainer, _statement.variableName);
 		break;
 	}
+}
+
+int ProgramController::getReadyId()
+{
+	auto bufferProgram = *(mProgramSequnce.begin());
+	return bufferProgram.getId();
+}
+
+Statement ProgramController::getCurrentStatement()
+{
+	int currentId = getReadyId();
+	return mStatementStack.getStatement(currentId);
 }
 
 void ProgramController::implementEnd()
@@ -75,7 +87,7 @@ void ProgramController::implementUnlock()
 	overImplementation();
 }
 
-void ProgramController::implementPrint(std::map<char, int> _variablesContainer, char _variableName)
+void ProgramController::implementPrint(const std::map<char, int> & _variablesContainer, char _variableName)
 {
 	int implementationTime = mInitializer.outputQTime;
 	startImplementation();
@@ -84,7 +96,7 @@ void ProgramController::implementPrint(std::map<char, int> _variablesContainer, 
 	overImplementation();
 }
 
-void ProgramController::implementAssignment(std::map<char, int> * _variablesContainer, char _variableName, int _variableValue)
+void ProgramController::implementAssignment(std::map<char, int> & _variablesContainer, char _variableName, int _variableValue)
 {
 	int implementationTime = mInitializer.assignmentQTime;
 	startImplementation();

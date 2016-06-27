@@ -1,35 +1,40 @@
 #include "stdafx.h"
 #include "StatementBuilder.h"
 
-StatementBuilder::StatementBuilder(std::string path)
-	: mStatementCounter(0)
-	, mWrongStatement(false)
-	, mOutOfNumberFlag(false)
+StatementBuilder::StatementBuilder(const std::string & _path)
+	: mInitializer()
 	, mStatementSequnce()
 	, mVariablesContainer()
+	, mStatementCounter(0)
+	, mOutOfNumberFlag(false)
+	, mWrongStatement(false)
+	, mStatementStack()
+	
 {
-	mFileStream.open(path);
+	mFileStream.open(_path);
 	buildInitializer();
+	mStatementStack.initializeStatementStack(mInitializer.numberOfProgramms);
 	buildStatementSequnce();
 	validateStatementSequnce();
+	buildStatementStack();
 }
 
-StatementBuilder::~StatementBuilder()
-{
-	mFileStream.close();
-}
-
-std::list<Statement> StatementBuilder::getStatementSequnce()
+std::list<Statement> & StatementBuilder::getStatementSequnce()
 {
 	return mStatementSequnce;
 }
 
-std::map<char, int> StatementBuilder::getVariablesContainer()
+std::map<char, int> & StatementBuilder::getVariablesContainer()
 {
 	return mVariablesContainer;
 }
 
-Initializer StatementBuilder::getInitializer()
+StatementStack & StatementBuilder::getStatementStack()
+{
+	return mStatementStack;
+}
+
+Initializer & StatementBuilder::getInitializer()
 {
 	return mInitializer;
 }
@@ -70,9 +75,32 @@ void StatementBuilder::validateStatementSequnce()
 		throw std::runtime_error("Unlock must be follow the lock statement!");
 	}
 
-	if (mEndCounter > mInitializer.numberOfProgramms)
+	if (mEndCounter != mInitializer.numberOfProgramms)
 	{
 		throw std::runtime_error("Incorrect end statements!");
+	}
+}
+
+void StatementBuilder::buildStatementStack()
+{
+	int numberOfProgramms(mInitializer.numberOfProgramms);
+	int currentProgram(1);
+
+	for (auto statement : mStatementSequnce)
+	{
+		if (statement.command == StatementCommand::end)
+		{
+			mStatementStack.addStatement(statement, currentProgram);
+			currentProgram++;
+			continue;
+		}
+
+		if (currentProgram > numberOfProgramms)
+		{
+			return;
+		}
+
+		mStatementStack.addStatement(statement, currentProgram);
 	}
 }
 
@@ -161,7 +189,7 @@ void StatementBuilder::buildStatementSequnce()
 			break;
 		}
 
-		if (mStatementCounter > 25)
+		if (mStatementCounter > 26)
 		{
 			mCorrectStatement = false;
 		}
@@ -173,21 +201,21 @@ void StatementBuilder::buildStatementSequnce()
 	}
 }
 
-bool StatementBuilder::isComand(std::string command)
+bool StatementBuilder::isComand(const std::string & _command)
 {
 	bool mFlag(false);
 
-	if (command == "end")
+	if (_command == "end")
 	{
 		mFlag = true;
 		createComandEnd();
 	}
-	else if (command == "lock")
+	else if (_command == "lock")
 	{
 		mFlag = true;
 		createComandLock();
 	}
-	else if (command == "unlock")
+	else if (_command == "unlock")
 	{
 		mFlag = true;
 		createComandUnlock();
@@ -196,15 +224,15 @@ bool StatementBuilder::isComand(std::string command)
 	return mFlag;
 }
 
-bool StatementBuilder::isPrint(std::vector<std::string> command)
+bool StatementBuilder::isPrint(const std::vector<std::string> & _command)
 {
 	bool mFlag(false);
 
-	if ((command.at(0) == "print") && (command.at(1).length() == 1))
+	if ((_command.at(0) == "print") && (_command.at(1).length() == 1))
 	{
 		for (auto name : mVariablesNames)
 		{
-			if (name == command.at(1)[0])
+			if (name == _command.at(1)[0])
 			{
 				mFlag = true;
 				createComandPrint(name);
@@ -216,16 +244,16 @@ bool StatementBuilder::isPrint(std::vector<std::string> command)
 	return mFlag;
 }
 
-bool StatementBuilder::isAssignment(std::vector<std::string> command)
+bool StatementBuilder::isAssignment(const std::vector<std::string> & _command)
 {
 	bool mFlag(false);
 
-	if ((command.at(1) == "=") && (command.at(0).length() == 1) && (command.at(2).length() <= 2))
+	if ((_command.at(1) == "=") && (_command.at(0).length() == 1) && (_command.at(2).length() <= 2))
 	{
-		int value = stoi(command.at(2));
+		int value = stoi(_command.at(2));
 		for (auto name : mVariablesNames)
 		{
-			if ((name == command.at(0)[0]) && (value < 100))
+			if ((name == _command.at(0)[0]) && (value < 100))
 			{
 				mFlag = true;
 				createComandAssignement(value, name);

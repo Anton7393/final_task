@@ -9,6 +9,7 @@
 
 int main()
 {
+	StatementStack statementStack;
 	std::list<Statement> statementSequnce;
 	std::map<char, int> variablesContainer;
 	Initializer initializer;
@@ -19,13 +20,14 @@ int main()
 		initializer = builder.getInitializer();
 		statementSequnce = builder.getStatementSequnce();
 		variablesContainer = builder.getVariablesContainer();
+		statementStack = builder.getStatementStack();
 	}
 	catch (std::runtime_error & ex)
 	{
 		std::cout << ex.what() << std::endl;
 	}
 
-	ProgramController controller(initializer, statementSequnce, variablesContainer);
+	ProgramController controller(initializer, statementStack, variablesContainer); 
 	controller.start();
 
 	system("pause");

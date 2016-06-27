@@ -11,14 +11,14 @@ Program::Program()
 	++mNextId;
 }
 
-void Program::print(std::map<char, int> _variableContainer, char _name)
+void Program::print(const std::map<char, int> & _variableContainer, char _name)
 {
 	std::cout << mID << " : " << _variableContainer.at(_name) << std::endl;
 }
 
-void Program::assignment(std::map<char, int> * _variableContainer, char _name, int _value)
+void Program::assignment(std::map<char, int> & _variableContainer, char _name, int _value)
 {
-	_variableContainer->at(_name) = _value;
+	_variableContainer.at(_name) = _value;
 }
 
 void Program::lock()
@@ -36,12 +36,17 @@ void Program::end()
 	mStatus = Status::over;
 }
 
+int Program::getId()
+{
+	return mID;
+}
+
 Status Program::getStatus()
 {
 	return mStatus;
 }
 
-void Program::setStatus(Status _status)
+void Program::setStatus(const Status & _status)
 {
 	mStatus = _status;
 }

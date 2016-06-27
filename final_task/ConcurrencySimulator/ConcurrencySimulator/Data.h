@@ -6,7 +6,7 @@ enum class StatementCommand
 	lock,
 	unlock,
 	print,
-	assignment
+	assignment,
 };
 
 enum class Status
@@ -19,34 +19,33 @@ enum class Status
 
 struct Statement
 {
-	Statement(StatementCommand _command)
-		: command(_command)
-		, variableValue(NULL)
-		, variableName(NULL)
-	{
-	}
-
-	Statement(StatementCommand _command, char _variableName)
-		: command(_command)
-		, variableValue(NULL)
-		, variableName(_variableName)
-	{
-	}
-
-	Statement(StatementCommand _command, int _variableValue, char _variableName)
-		: command(_command)
-		, variableValue(_variableValue)
-		, variableName(_variableName)
-	{
-	}
+	Statement(StatementCommand _command);
+	Statement(StatementCommand _command, char _variableName);
+	Statement(StatementCommand _command, int _variableValue, char _variableName);
 
 	StatementCommand command;
 	int variableValue;
 	char variableName;
 };
 
+struct StatementStack
+{
+	StatementStack();
+	void initializeStatementStack(int _countOfProgramms);
+	void addStatement(Statement _statement, int _sequnceNumber);
+	Statement getStatement(int _id);
+	int getSizeOfSequnce(int _id);
+	int getSizeOfStack();
+
+private:
+	typedef std::list<Statement> StatementSequnce;
+	std::vector<StatementSequnce> mStatementStack;
+};
+
 struct Initializer
 {
+	Initializer();
+
 	int numberOfProgramms;
 	int assignmentQTime;
 	int outputQTime;

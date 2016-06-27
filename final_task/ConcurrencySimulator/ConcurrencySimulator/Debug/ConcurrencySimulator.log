@@ -1,2 +1,9 @@
-﻿  ConcurrencySimulator.cpp
-  ConcurrencySimulator.vcxproj -> D:\Work\Программирование\Задания\C++\task8\ConcurrencySimulator\Debug\ConcurrencySimulator.exe
+﻿  Data.cpp
+  Generating Code...
+  Compiling...
+  StatementBuilder.cpp
+  ProgramController.cpp
+  Program.cpp
+  ConcurrencySimulator.cpp
+  Generating Code...
+  ConcurrencySimulator.vcxproj -> D:\Work\Программирование\Задания\C++\final_task\final_task\ConcurrencySimulator\Debug\ConcurrencySimulator.exe
